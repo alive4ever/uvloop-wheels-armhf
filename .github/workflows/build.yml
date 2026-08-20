@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@v7
       - name: Building uvloop
         run: |
-          docker pull quay.io/pypa/manylinux_2_31_armv7l:latest
-          docker run -e PYTHON_VERSION="${{ matrix.python_version }}" -it -d -v ${{ github.workspace }}:/io -w /io --name builder manylinux_2_31_armv7l
+          docker run -e PYTHON_VERSION="${{ matrix.python_version }}" -it -d -v ${{ github.workspace }}:/io -w /io --name builder quay.io/pypa/manylinux_2_31_armv7l:latest
           docker exec -it -v ${{ github.workspace }}:/io builder -- sh prepare.sh
           docker exec -e PYTHON_VERSION="${{ matrix.python_version }}" -it -v ${{ github.workspace }}:/io --user builder builder -- sh build.sh
           docker exec -e PYTHON_VERSION="${{ matrix.python_version }}" -it -v ${{ github.workspace }}:/io -w /io builder -- sh post-build.sh
