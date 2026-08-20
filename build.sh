@@ -8,11 +8,12 @@ fi
 echo "Using $PYTHON"
 TAG="v0.22.1"
 git clone --revision="$TAG" --recursive "https://github.com/MagicStack/uvloop"
-$PYTHON -m venv venv
+curl -L -o uv.sh https://astral.sh/uv/install.sh
+sh uv.sh
+PATH=$HOME/.local/bin:$PATH
+command -v uv || exit 127
+uv venv --python $PYTHON_VERSION venv
 . ./venv/bin/activate
-pip install -U pip "setuptools<82.0.0"
-pip install build
 cd ./uvloop
-pip install -e .[dev]
-python -m build -w -o ../dist
+uv build --wheel --out-dir ../dist
 cd ..
