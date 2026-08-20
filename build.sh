@@ -15,6 +15,6 @@ command -v uv || exit 127
 uv venv --python $PYTHON_VERSION venv
 . ./venv/bin/activate
 cd ./uvloop
-echo "setuptools<=82.0.0" > constraints.txt
+echo "setuptools<82.0.0" > constraints.txt
 uv build --build-constraints ./constraints.txt --wheel --out-dir ../dist
 cd ..
