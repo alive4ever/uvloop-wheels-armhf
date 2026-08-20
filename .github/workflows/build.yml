@@ -27,9 +27,9 @@ jobs:
           docker exec -e PYTHON_VERSION="${{ matrix.python_version }}" -t --user builder builder sh build.sh
           docker exec -t builder sh post-build.sh
           docker stop builder
-          UID=$(id -un)
-          GID=$(id -gn)
-          sudo chown -R "$UID:$GID" ${{ github.workspace }}/dist
+          MYNAME=$(id -un)
+          MYGROUP=$(id -gn)
+          sudo chown -R "$MYNAME:$MYGROUP" ${{ github.workspace }}/dist
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
