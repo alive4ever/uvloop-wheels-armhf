@@ -13,5 +13,6 @@ $PYTHON -m venv venv
 pip install -U pip
 pip install build
 cd ./uvloop
+pip install -e .[dev]
 python -m build -w -o ../dist
 cd ..
