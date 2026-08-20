@@ -10,7 +10,7 @@ TAG="v0.22.1"
 git clone --revision="$TAG" --recursive "https://github.com/MagicStack/uvloop"
 $PYTHON -m venv venv
 . ./venv/bin/activate
-pip install -U pip
+pip install -U pip "setuptools<82.0.0"
 pip install build
 cd ./uvloop
 pip install -e .[dev]
