@@ -1,0 +1,45 @@
+name: Building uvloop for armhf
+run-name: ${{ github.actor }} is building uvloop for armhf
+on:
+  push:
+    tags:
+      - '*'
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        python_version: [3.11, 3.12, 3.13, 3.14]
+    runs-on: ubuntu-26.04-arm
+    steps:
+      - name: Prepare qemu-user
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-binfmt
+      - name: Prepare repository
+        uses: actions/checkout@v7
+      - name: Building uvloop
+        run: |
+          docker pull quay.io/pypa/manylinux_2_31_armv7l:latest
+          docker run -e PYTHON_VERSION="${{ matrix.python_version }}" -it -d -v ${{ github.workspace }}:/io -w /io --name builder manylinux_2_31_armv7l
+          docker exec -it -v ${{ github.workspace }}:/io builder -- sh prepare.sh
+          docker exec -e PYTHON_VERSION="${{ matrix.python_version }}" -it -v ${{ github.workspace }}:/io --user builder builder -- sh build.sh
+          docker exec -e PYTHON_VERSION="${{ matrix.python_version }}" -it -v ${{ github.workspace }}:/io -w /io builder -- sh post-build.sh
+          docker stop builder
+          UID=$(id -un)
+          GID=$(id -gn)
+          sudo chown -R "$UID:$GID" ${{ github.workspace }}/dist
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-package-${{ matrix.python_version }}
+          path: ${{ github.workspace }}/dist/
+      - name: Creating release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          gh release create "$TAG" ${{ github.workspace }}/dist/* --verify-tag --generate-notes || gh release upload "$TAG" ${{ github.workspace }}/dist/*
