@@ -1,7 +1,7 @@
 set -e
 cd ~
 if [ -n "$PYTHON_VERSION" ] ; then
-	PYTHON="$PYTHON_VERSION"
+	PYTHON="python${PYTHON_VERSION}"
 else
 	PYTHON="python3"
 fi
