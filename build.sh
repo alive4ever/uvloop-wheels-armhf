@@ -6,7 +6,7 @@ else
 	PYTHON="python3"
 fi
 echo "Using $PYTHON"
-TAG="v0.22.1"
+TAG="v0.23.0"
 git clone --revision="$TAG" --recursive "https://github.com/MagicStack/uvloop"
 curl -L -o uv.sh https://astral.sh/uv/install.sh
 sh uv.sh
