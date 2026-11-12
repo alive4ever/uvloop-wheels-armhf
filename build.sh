@@ -16,5 +16,7 @@ uv venv --python $PYTHON_VERSION venv
 . ./venv/bin/activate
 cd ./uvloop
 echo "setuptools<82.0.0" > constraints.txt
-uv build --build-constraints ./constraints.txt --wheel --out-dir ../dist
+uv build --build-constraints ./constraints.txt --wheel --out-dir ../wheels
+uv pip install auditwheel
+auditwheel repair -w ../dist ../wheels/*.whl
 cd ..
